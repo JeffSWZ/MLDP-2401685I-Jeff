@@ -167,32 +167,45 @@ def prepare_model_input(
 
     # Create a dictionary for the input features
     row = {
-        "Income": income,
-        "Children": children,
-        "Cars": cars,
-        "income_per_person": income_per_person,
-        "Marital Status_Single": marital_status == "Single",
-        "Gender_Male": gender == "Male",
-        "Education_Graduate Degree": education == "Graduate Degree",
-        "Education_High School": education == "High School",
-        "Education_Partial College": education == "Partial College",
-        "Education_Partial High School": education == "Partial High School",
-        "Occupation_Manual": occupation == "Manual",
-        "Occupation_Professional": occupation == "Professional",
-        "Occupation_Skilled Manual": occupation == "Skilled Manual",
-        "Occupation_Management": occupation == "Management",
-        "Home Owner_Yes": home_owner == "Yes",
-        "Commute Distance_1-2 Miles": commute_distance == "1-2 Miles",
-        "Commute Distance_2-5 Miles": commute_distance == "2-5 Miles",
-        "Commute Distance_5-10 Miles": commute_distance == "5-10 Miles",
-        "Commute Distance_10+ Miles": commute_distance == "10+ Miles",
-        "Region_North America": region == "North America",
-        "Region_Pacific": region == "Pacific",
-        "age_group_30-40": age_group == "30-40",
-        "age_group_40-50": age_group == "40-50",
-        "age_group_50-60": age_group == "50-60",
-        "age_group_60+": age_group == "60+"
-    }
+    "Income": income,
+    "Children": children,
+    "Cars": cars,
+    "income_per_person": income / (children + 1),
+
+    "Marital Status_Single": marital_status == "Single",
+    "Gender_Male": gender == "Male",
+
+    "Education_Bachelors": education == "Bachelors",
+    "Education_Graduate Degree": education == "Graduate Degree",
+    "Education_High School": education == "High School",
+    "Education_Partial College": education == "Partial College",
+    "Education_Partial High School": education == "Partial High School",
+
+    "Occupation_Clerical": occupation == "Clerical",
+    "Occupation_Manual": occupation == "Manual",
+    "Occupation_Professional": occupation == "Professional",
+    "Occupation_Skilled Manual": occupation == "Skilled Manual",
+    "Occupation_Management": occupation == "Management",
+
+    "Home Owner_Yes": home_owner == "Yes",
+
+    "Commute Distance_0-1 Miles": commute_distance == "0-1 Miles",
+    "Commute Distance_1-2 Miles": commute_distance == "1-2 Miles",
+    "Commute Distance_2-5 Miles": commute_distance == "2-5 Miles",
+    "Commute Distance_5-10 Miles": commute_distance == "5-10 Miles",
+    "Commute Distance_10+ Miles": commute_distance == "10+ Miles",
+
+    "Region_Europe": region == "Europe",
+    "Region_North America": region == "North America",
+    "Region_Pacific": region == "Pacific",
+
+    "age_group_<30": age_group == "<30",
+    "age_group_30-40": age_group == "30-40",
+    "age_group_40-50": age_group == "40-50",
+    "age_group_50-60": age_group == "50-60",
+    "age_group_60+": age_group == "60+",
+}
+
 
     # Convert to DataFrame and reindex to match model features
     return pd.DataFrame([row]).reindex(
@@ -240,16 +253,38 @@ elif page == "Predict Purchase":
     # Input form
     with col1:
         income = st.number_input("Income", min_value=0, step=1000) # Ensure non-negative income
-        age_group = st.selectbox("Age group", ["30-40", "40-50", "50-60", "60+"]) 
+        age_group = st.selectbox(
+    "Age group",
+    ["<30", "30-40", "40-50", "50-60", "60+"]
+)
+
         children = st.slider("Number of children", 0, 5)
         cars = st.slider("Number of cars", 0, 4)
         marital_status = st.selectbox("Marital status", ["Single", "Married"])
         gender = st.selectbox("Gender", ["Male", "Female"])
-        education = st.selectbox("Education level", ["Graduate Degree", "High School", "Partial College", "Partial High School"])
-        occupation = st.selectbox("Occupation", ["Manual", "Professional", "Skilled Manual", "Management"])
+        education = st.selectbox(
+    "Education level",
+    [
+        "Bachelors",
+        "Graduate Degree",
+        "High School",
+        "Partial College",
+        "Partial High School"
+    ]
+)
+
+        occupation = st.selectbox(
+    "Occupation",
+    ["Clerical", "Manual", "Professional", "Skilled Manual", "Management"]
+)
+
         home_owner = st.selectbox("Home owner", ["Yes", "No"])
         commute_distance = st.selectbox("Commute distance", ["0-1 Miles", "1-2 Miles", "2-5 Miles", "5-10 Miles", "10+ Miles"])
-        region = st.selectbox("Region", ["North America", "Pacific"])
+        region = st.selectbox(
+    "Region",
+    ["Europe", "North America", "Pacific"]
+)
+
         predict_btn = st.button("Run Prediction")
 
     # Prediction result
